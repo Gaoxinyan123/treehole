@@ -1,0 +1,10 @@
+(global["webpackJsonp"]=global["webpackJsonp"]||[]).push([["components/uni-search-bar/uni-search-bar"],{"1c41":function(n,t,e){"use strict";var c=e("9b32"),a=e.n(c);a.a},"1c61":function(n,t,e){"use strict";e.r(t);var c,a={uniIcons:function(){return Promise.all([e.e("common/vendor"),e.e("components/uni-icons/uni-icons")]).then(e.bind(null,"2ba4"))}},i=function(){var n=this,t=n.$createElement;n._self._c},o=[],s=e("bc4d"),r=s["a"],u=(e("1c41"),e("f0c5")),l=Object(u["a"])(r,i,o,!1,null,"2150c9c9",null,!1,a,c);t["default"]=l.exports},"9b32":function(n,t,e){},bc4d:function(n,t,e){"use strict";(function(n){var c=function(){Promise.all([e.e("common/vendor"),e.e("components/uni-icons/uni-icons")]).then(function(){return resolve(e("2ba4"))}.bind(null,e)).catch(e.oe)};t["a"]={name:"UniSearchBar",components:{uniIcons:c},props:{placeholder:{type:String,default:"请输入搜索内容"},radius:{type:[Number,String],default:5},clearButton:{type:String,default:"auto"},cancelButton:{type:String,default:"auto"},cancelText:{type:String,default:"取消"},bgColor:{type:String,default:"#F8F8F8"},maxlength:{type:[Number,String],default:100}},data:function(){return{show:!1,showSync:!1,searchVal:""}},watch:{searchVal:function(){this.$emit("input",{value:this.searchVal})}},methods:{searchClick:function(){var n=this;this.show||(this.searchVal="",this.show=!0,this.$nextTick((function(){n.showSync=!0})))},clear:function(){this.searchVal=""},cancel:function(){this.$emit("cancel",{value:this.searchVal}),this.searchVal="",this.show=!1,this.showSync=!1,n.hideKeyboard()},confirm:function(){n.hideKeyboard(),this.$emit("confirm",{value:this.searchVal})}}}}).call(this,e("543d")["default"])}}]);
+;(global["webpackJsonp"] = global["webpackJsonp"] || []).push([
+    'components/uni-search-bar/uni-search-bar-create-component',
+    {
+        'components/uni-search-bar/uni-search-bar-create-component':(function(module, exports, __webpack_require__){
+            __webpack_require__('543d')['createComponent'](__webpack_require__("1c61"))
+        })
+    },
+    [['components/uni-search-bar/uni-search-bar-create-component']]
+]);

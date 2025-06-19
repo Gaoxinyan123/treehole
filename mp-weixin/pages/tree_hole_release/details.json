@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "树洞发布",
+  "usingComponents": {
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "list_comment": "/components/diy/list_comment",
+    "bar_title": "/components/diy/bar_title",
+    "form_editor": "/components/diy/form_editor"
+  }
+}

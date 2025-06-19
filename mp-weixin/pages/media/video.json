@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "视频",
+  "backgroundColor": "#000000",
+  "usingComponents": {
+    "uni-easyinput": "/components/uni-easyinput/uni-easyinput"
+  }
+}

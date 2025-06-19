@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "评论",
+  "usingComponents": {
+    "uni-easyinput": "/components/uni-easyinput/uni-easyinput",
+    "t-color-picker": "/components/diy/t-color-picker"
+  }
+}

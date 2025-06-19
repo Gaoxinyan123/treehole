@@ -1,0 +1,1 @@
+<view class="wt-tabs" id="{{elId}}"><block wx:for="{{tabs}}" wx:for-item="obj" wx:for-index="idx" wx:key="idx"><view data-event-opts="{{[['tap',[['change',['$0',idx],[[['tabs','',idx]]]]]]]}}" class="{{['wt-tabs__container-item '+selected_[idx]]}}" bindtap="__e">{{''+(field?obj[field]:obj)+''}}</view></block></view>

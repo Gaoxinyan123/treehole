@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "QQ授权登录",
+  "enablePullDownRefresh": false,
+  "usingComponents": {
+    "uni-popup": "/components/uni-popup/uni-popup"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "我",
+  "usingComponents": {
+    "uni-icons": "/components/uni-icons/uni-icons",
+    "nav_quick": "/components/diy/nav_quick"
+  }
+}

@@ -1,0 +1,1 @@
+<uni-card class="notice_details" vue-id="64e93842-1" title="{{obj.title}}" extra="{{$root.m0}}" bind:__l="__l" vue-slots="{{['default']}}"><rich-text style="word-break:break-all;" nodes="{{$root.m1}}"></rich-text></uni-card>

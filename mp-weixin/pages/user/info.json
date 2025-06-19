@@ -1,0 +1,7 @@
+{
+  "navigationBarTitleText": "基本信息",
+  "usingComponents": {
+    "uni-easyinput": "/components/uni-easyinput/uni-easyinput",
+    "uni-icons": "/components/uni-icons/uni-icons"
+  }
+}
