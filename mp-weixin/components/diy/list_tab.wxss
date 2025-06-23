@@ -1,1 +1,0 @@
-.wt-tabs{box-sizing:border-box;overflow:hidden;margin-top:10px}::-webkit-scrollbar{display:none}.wt-tabs__container-item{width:100%}.wt-tabs__container-item{box-sizing:border-box;padding:5px 3px;border-radius:5px;text-align:center;margin-bottom:10px}.wt-tabs__container-item.selected{border:1px solid red;color:red}

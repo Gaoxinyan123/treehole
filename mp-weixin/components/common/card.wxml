@@ -1,1 +1,0 @@
-<uni-card vue-id="5f528d5d-1" padding="10px 0" class="data-v-780a2e24" bind:__l="__l" vue-slots="{{['default']}}"><view class="card-title data-v-780a2e24"><text class="data-v-780a2e24">{{title}}</text><block wx:if="{{url}}"><navigator class="more data-v-780a2e24" url="{{url}}">更多</navigator></block></view><slot></slot></uni-card>

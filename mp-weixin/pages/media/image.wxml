@@ -1,1 +1,0 @@
-<view class="page_media data-v-1b86e14d" id="media_image"><view class="image data-v-1b86e14d"><image mode="{{mode}}" src="{{src}}" data-event-opts="{{[['error',[['imageError',['$event']]]]]}}" binderror="__e" class="data-v-1b86e14d"></image></view></view>
