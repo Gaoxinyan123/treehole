@@ -16,19 +16,18 @@ import java.sql.Timestamp;
  * @author xxx
  *@since 202X-XX-XX
  */
-@TableName("article")
-@Data
+@TableName("article")//指定这个实体对应数据库中的 article 表。
+@Data//自动生成 getter、setter、toString()、equals()、hashCode() 等。
 @EqualsAndHashCode(callSuper = false)
 public class Article implements Serializable {
 
     private static final long serialVersionUID = 974130093549945724L;
 
 
-    @TableId(value = "article_id", type = IdType.AUTO)
+    @TableId(value = "article_id", type = IdType.AUTO)//标识这是主键,主键由数据库自增
     private Integer articleId;
 
 
-    @TableId(value = "title")
     private String title;
 
     /**
