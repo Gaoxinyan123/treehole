@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.springframework.http.ResponseEntity;
 
 /**
  */
@@ -38,6 +39,18 @@ public class BaseController<E, S extends BaseService<E>> {
     @PostMapping("/add")
     @Transactional
     public Map<String, Object> add(HttpServletRequest request) throws IOException {
+        // 校验 article_id
+        String articleIdStr = request.getParameter("article_id");
+        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
+            try {
+                int articleId = Integer.parseInt(articleIdStr);
+                if (articleId <= 0 || articleId > 100) {
+                    return error(400, "article_id 错误");
+                }
+            } catch (NumberFormatException e) {
+                return error(400, "article_id 错误");
+            }
+        }
         service.insert(service.readBody(request.getReader()));
         return success(1);
     }
@@ -52,6 +65,18 @@ public class BaseController<E, S extends BaseService<E>> {
     @PostMapping("/set")
 	@Transactional
     public Map<String, Object> set(HttpServletRequest request) throws IOException {
+        // 校验 article_id
+        String articleIdStr = request.getParameter("article_id");
+        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
+            try {
+                int articleId = Integer.parseInt(articleIdStr);
+                if (articleId <= 0 || articleId > 100) {
+                    return error(400, "article_id 错误");
+                }
+            } catch (NumberFormatException e) {
+                return error(400, "article_id 错误");
+            }
+        }
         service.update(service.readQuery(request), service.readConfig(request), service.readBody(request.getReader()));
         return success(1);
     }
@@ -60,6 +85,18 @@ public class BaseController<E, S extends BaseService<E>> {
     @RequestMapping(value = "/del")
     @Transactional
     public Map<String, Object> del(HttpServletRequest request) {
+        // 校验 article_id
+        String articleIdStr = request.getParameter("article_id");
+        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
+            try {
+                int articleId = Integer.parseInt(articleIdStr);
+                if (articleId <= 0 || articleId > 100) {
+                    return error(400, "article_id 错误");
+                }
+            } catch (NumberFormatException e) {
+                return error(400, "article_id 错误");
+            }
+        }
         service.delete(service.readQuery(request), service.readConfig(request));
         return success(1);
     }
@@ -182,5 +219,10 @@ public class BaseController<E, S extends BaseService<E>> {
             put("message", message);
         }});
         return map;
+    }
+
+    // 判断当前 Controller 是否为 ArticleController
+    private boolean isArticleController() {
+        return this.getClass().getSimpleName().equals("ArticleController");
     }
 }

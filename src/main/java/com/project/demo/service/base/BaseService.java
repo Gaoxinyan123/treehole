@@ -25,7 +25,7 @@ import java.util.*;
 public class BaseService<E>{
 
     @Autowired
-    private BaseMapper<E> baseMapper;//使用MyBatis的Basemapper自动继承方法
+    protected BaseMapper<E> baseMapper;//使用MyBatis的Basemapper自动继承方法
 
     Class<E> eClass = (Class<E>)((ParameterizedType)getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 
@@ -556,5 +556,9 @@ public class BaseService<E>{
         return newArray;
     }
 
+    public List<Map<String, Object>> selectGroupCountList(Map<String, String> query, Map<String, String> config) {
+        String sql = selectGroupCount(query, config);
+        return baseMapper.selectBaseList(sql);
+    }
 
 }
