@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.demo.dao.ArticleMapper">
 
     <resultMap type="com.project.demo.entity.Article" id="ArticleResult">
@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="title"    column="title"    />
         <result property="type"    column="type"    />
         <result property="hits"    column="hits"    />
-        <result property="praise_len"    column="praise_len"    />
+        <result property="praiseLen"    column="praise_len"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
         <result property="source"    column="source"    />
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where article_id = #{articleId}
     </select>
 
-    <insert id="insertArticle" parameterType="com.project.demo.entity.Article" useGeneratedKeys="true" keyProperty="articleId">
+    <insert id="insert" parameterType="com.project.demo.entity.Article" useGeneratedKeys="true" keyProperty="articleId">
         insert into article
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="title != null  and title != ''">title,</if>
@@ -59,7 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null  and content != ''">content,</if>
             <if test="img != null  and img != ''">img,</if>
             <if test="description != null  and description != ''">description,</if>
-         </trim>
+        </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="title != null  and title != ''">#{title},</if>
             <if test="type != null  and type != ''">#{type},</if>
@@ -73,7 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="content != null  and content != ''">#{content},</if>
             <if test="img != null  and img != ''">#{img},</if>
             <if test="description != null  and description != ''">#{description},</if>
-         </trim>
+        </trim>
     </insert>
 
     <update id="updateArticle" parameterType="com.project.demo.entity.Article">
