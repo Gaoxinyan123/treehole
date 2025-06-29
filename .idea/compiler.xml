@@ -9,12 +9,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="treenodeV1.0" />
         <module name="gitpro" />
+        <module name="gitwsy" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="gitpro" options="-parameters" />
+      <module name="gitwsy" options="-parameters" />
       <module name="treenodeV1.0" options="-parameters" />
     </option>
   </component>
