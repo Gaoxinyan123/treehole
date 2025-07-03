@@ -3,8 +3,10 @@ package com.project.demo.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.project.demo.entity.AccessToken;
+import com.project.demo.entity.RegisteredUsers;
 import com.project.demo.entity.User;
 import com.project.demo.entity.UserGroup;
+import com.project.demo.service.RegisteredUsersService;
 import com.project.demo.service.UserGroupService;
 import com.project.demo.service.UserService;
 
@@ -42,6 +44,9 @@ public class UserController extends BaseController<User, UserService> {
     private UserGroupService userGroupService;
 
     @Autowired
+    private RegisteredUsersService registeredUsersService;
+
+    @Autowired
     private RedisTemplate redisTemplate;
 
     /**
@@ -50,6 +55,7 @@ public class UserController extends BaseController<User, UserService> {
      * @return
      */
     @PostMapping("register")
+    @Transactional
     public Map<String, Object> signUp(@RequestBody User user) {
         // 查询用户
         Map<String, String> query = new HashMap<>();
@@ -59,8 +65,49 @@ public class UserController extends BaseController<User, UserService> {
         if (list.size()>0){
             return error(30000, "用户已存在");
         }
+
+        // 加密密码
         map.put("password",service.encryption(String.valueOf(map.get("password"))));
+
+        // 插入用户表
         service.insert(map);
+
+        // 获取插入后的用户ID
+        Integer userId = null;
+        if (map.get("user_id") != null) {
+            userId = Integer.valueOf(map.get("user_id").toString());
+        } else {
+            // 如果没有返回user_id，需要重新查询
+            query.clear();
+            query.put("username", user.getUsername());
+            List<User> userList = service.selectBaseList(service.select(query, new HashMap<>()));
+            if (userList.size() > 0) {
+                userId = userList.get(0).getUserId();
+            }
+        }
+
+        // 如果是注册用户，同时插入registered_users表
+        if ("注册用户".equals(user.getUserGroup()) && userId != null) {
+            RegisteredUsers registeredUser = new RegisteredUsers();
+            registeredUser.setUserId(userId);
+
+            // 尝试从不同的字段获取手机号
+            String mobilePhoneNumber = null;
+            if (user.getPhone() != null && !user.getPhone().isEmpty()) {
+                mobilePhoneNumber = user.getPhone();
+            } else if (map.get("mobile_phone_number") != null) {
+                mobilePhoneNumber = map.get("mobile_phone_number").toString();
+            }
+
+            if (mobilePhoneNumber != null && !mobilePhoneNumber.isEmpty()) {
+                registeredUser.setMobile_phone_number(mobilePhoneNumber);
+            }
+
+            // 插入registered_users表
+            Map<String, Object> regMap = JSON.parseObject(JSON.toJSONString(registeredUser));
+            registeredUsersService.insert(regMap);
+        }
+
         return success(1);
     }
 
