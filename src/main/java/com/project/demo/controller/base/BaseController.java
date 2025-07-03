@@ -7,7 +7,6 @@ import com.project.demo.service.base.BaseService;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +20,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.http.ResponseEntity;
 
 /**
  */
 @Slf4j
-@RequestMapping(
-        // 这一行让所有子路径都默认 produce JSON
-        produces = MediaType.APPLICATION_JSON_VALUE
-)
 public class BaseController<E, S extends BaseService<E>> {
 
     @Setter
@@ -39,22 +33,9 @@ public class BaseController<E, S extends BaseService<E>> {
     @PostMapping("/add")
     @Transactional
     public Map<String, Object> add(HttpServletRequest request) throws IOException {
-        // 校验 article_id
-        String articleIdStr = request.getParameter("article_id");
-        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
-            try {
-                int articleId = Integer.parseInt(articleIdStr);
-                if (articleId <= 0 || articleId > 100) {
-                    return error(400, "article_id 错误");
-                }
-            } catch (NumberFormatException e) {
-                return error(400, "article_id 错误");
-            }
-        }
         service.insert(service.readBody(request.getReader()));
         return success(1);
     }
-
 
     @Transactional
     public Map<String, Object> addMap(Map<String,Object> map){
@@ -63,20 +44,8 @@ public class BaseController<E, S extends BaseService<E>> {
     }
 
     @PostMapping("/set")
-	@Transactional
+    @Transactional
     public Map<String, Object> set(HttpServletRequest request) throws IOException {
-        // 校验 article_id
-        String articleIdStr = request.getParameter("article_id");
-        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
-            try {
-                int articleId = Integer.parseInt(articleIdStr);
-                if (articleId <= 0 || articleId > 100) {
-                    return error(400, "article_id 错误");
-                }
-            } catch (NumberFormatException e) {
-                return error(400, "article_id 错误");
-            }
-        }
         service.update(service.readQuery(request), service.readConfig(request), service.readBody(request.getReader()));
         return success(1);
     }
@@ -85,18 +54,6 @@ public class BaseController<E, S extends BaseService<E>> {
     @RequestMapping(value = "/del")
     @Transactional
     public Map<String, Object> del(HttpServletRequest request) {
-        // 校验 article_id
-        String articleIdStr = request.getParameter("article_id");
-        if (isArticleController() && articleIdStr != null && !articleIdStr.isEmpty()) {
-            try {
-                int articleId = Integer.parseInt(articleIdStr);
-                if (articleId <= 0 || articleId > 100) {
-                    return error(400, "article_id 错误");
-                }
-            } catch (NumberFormatException e) {
-                return error(400, "article_id 错误");
-            }
-        }
         service.delete(service.readQuery(request), service.readConfig(request));
         return success(1);
     }
@@ -105,11 +62,9 @@ public class BaseController<E, S extends BaseService<E>> {
     public Map<String, Object> obj(HttpServletRequest request) {
         List resultList = service.selectBaseList(service.select(service.readQuery(request), service.readConfig(request)));
         if (resultList.size() > 0) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("obj",resultList.get(0));
-            return success(jsonObject);
+            return success(resultList.get(0));
         } else {
-            return success(null);
+            return error(404, "未找到数据");
         }
     }
 
@@ -147,7 +102,7 @@ public class BaseController<E, S extends BaseService<E>> {
     }
 
     @RequestMapping(value = {"/avg_group", "/avg"})
-	public Map<String, Object> avg(HttpServletRequest request) {
+    public Map<String, Object> avg(HttpServletRequest request) {
         Integer value = service.selectSqlToInteger(service.avg(service.readQuery(request), service.readConfig(request)));
         return success(value);
     }
@@ -194,7 +149,7 @@ public class BaseController<E, S extends BaseService<E>> {
         }
         if (o instanceof List) {
             if (((List) o).size() == 1) {
-               o =  ((List) o).get(0);
+                o =  ((List) o).get(0);
                 map.put("result", o);
             }else {
                 String jsonString = JSONObject.toJSONString(o, SerializerFeature.WriteMapNullValue);
@@ -219,10 +174,5 @@ public class BaseController<E, S extends BaseService<E>> {
             put("message", message);
         }});
         return map;
-    }
-
-    // 判断当前 Controller 是否为 ArticleController
-    private boolean isArticleController() {
-        return this.getClass().getSimpleName().equals("ArticleController");
     }
 }

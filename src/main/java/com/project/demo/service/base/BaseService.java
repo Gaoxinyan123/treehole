@@ -191,13 +191,39 @@ public class BaseService<E>{
 
     public String select(Map<String,String> query,Map<String,String> config){
         StringBuffer sql = new StringBuffer("select ");
-        sql.append(config.get(FindConfig.FIELD) == null || "".equals(config.get(FindConfig.FIELD)) ? "*" : config.get(FindConfig.FIELD)).append(" ");
-        sql.append("from ").append("`").append(table).append("`").append(toWhereSql(query, "0".equals(config.get(FindConfig.LIKE)),config.get(FindConfig.SQLHWERE)));
+
+        // 如果是查询 article 表，动态计算点赞数
+        if ("article".equals(table)) {
+            sql.append("a.*, COALESCE(p.praise_count, 0) as praise_len ");
+            sql.append("from `").append(table).append("` a ");
+            sql.append("LEFT JOIN (");
+            sql.append("  SELECT source_id, COUNT(*) as praise_count ");
+            sql.append("  FROM praise ");
+            sql.append("  WHERE source_table = 'article' AND status = 1 ");
+            sql.append("  GROUP BY source_id");
+            sql.append(") p ON a.article_id = p.source_id ");
+
+            // 为 article 表单独处理 WHERE 条件
+            String whereSql = toWhereSql(query, "0".equals(config.get(FindConfig.LIKE)), config.get(FindConfig.SQLHWERE));
+            if (!whereSql.isEmpty()) {
+                sql.append(whereSql);
+            }
+        } else {
+            sql.append(config.get(FindConfig.FIELD) == null || "".equals(config.get(FindConfig.FIELD)) ? "*" : config.get(FindConfig.FIELD)).append(" ");
+            sql.append("from ").append("`").append(table).append("`");
+            sql.append(toWhereSql(query, "0".equals(config.get(FindConfig.LIKE)),config.get(FindConfig.SQLHWERE)));
+        }
+
         if (config.get(FindConfig.GROUP_BY) != null && !"".equals(config.get(FindConfig.GROUP_BY))){
             sql.append("group by ").append(config.get(FindConfig.GROUP_BY)).append(" ");
         }
-        if (config.get(FindConfig.ORDER_BY) != null && !"".equals(config.get(FindConfig.ORDER_BY))){
-            sql.append("order by ").append(config.get(FindConfig.ORDER_BY)).append(" ");
+        // 新增：content_reporting 默认按 create_time 降序排序
+        String orderBy = config.get(FindConfig.ORDER_BY);
+        if ((orderBy == null || "".equals(orderBy)) && "content_reporting".equals(table)) {
+            orderBy = "create_time desc";
+        }
+        if (orderBy != null && !"".equals(orderBy)) {
+            sql.append("order by ").append(orderBy).append(" ");
         }
         if (config.get(FindConfig.PAGE) != null && !"".equals(config.get(FindConfig.PAGE))){
             int page = config.get(FindConfig.PAGE) != null && !"".equals(config.get(FindConfig.PAGE)) ? Integer.parseInt(config.get(FindConfig.PAGE)) : 1;
@@ -348,6 +374,10 @@ public class BaseService<E>{
             try {
                 StringBuilder sql = new StringBuilder(" WHERE ");
                 for (Map.Entry<String, String> entry : query.entrySet()) {
+                    // 跳过空字符串和null的参数
+                    if (entry.getValue() == null || entry.getValue().trim().isEmpty()) {
+                        continue;
+                    }
                     if (entry.getKey().contains(FindConfig.MIN_)) {
                         String min = humpToLine(entry.getKey()).replace("_min", "");
                         sql.append("`"+min+"`").append(" >= '").append(URLDecoder.decode(entry.getValue(), "UTF-8")).append("' and ");
@@ -359,17 +389,23 @@ public class BaseService<E>{
                         continue;
                     }
                     if (like == true) {
-                        sql.append("`"+humpToLine(entry.getKey())+"`").append(" LIKE '%").append(URLDecoder.decode(entry.getValue(), "UTF-8")).append("%'").append(" and ");
+                        sql.append("`"+humpToLine(entry.getKey())+"`").append(" LIKE '%").append(URLDecoder.decode(entry.getValue(), "UTF-8")).append("%' and ");
                     } else {
-                        sql.append("`"+humpToLine(entry.getKey())+"`").append(" = '").append(URLDecoder.decode(entry.getValue(), "UTF-8")).append("'").append(" and ");
+                        sql.append("`"+humpToLine(entry.getKey())+"`").append(" = '").append(URLDecoder.decode(entry.getValue(), "UTF-8")).append("' and ");
                     }
                 }
                 if (sqlwhere!=null && !sqlwhere.trim().equals("")) {
                     sql.append(sqlwhere).append(" and ");
                 }
-                sql.delete(sql.length() - 4, sql.length());
-                sql.append(" ");
-                return sql.toString();
+                if (sql.length() > 7) { // " WHERE "长度为7
+                    sql.delete(sql.length() - 4, sql.length());
+                    sql.append(" ");
+                    return sql.toString();
+                } else if (sqlwhere!=null && !sqlwhere.trim().equals("")) {
+                    return " WHERE " + sqlwhere;
+                } else {
+                    return "";
+                }
             } catch (UnsupportedEncodingException e) {
                 log.info("拼接sql 失败：{}", e.getMessage());
             }
